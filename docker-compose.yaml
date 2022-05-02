@@ -58,9 +58,13 @@ services:
             ES_JAVA_OPTS: "-Xmx256m -Xms256m"
         networks:
             - bridge
+            
+        restart: unless-stopped
         deploy:
             restart_policy:
-                condition: unless-stopped
+                condition: any
+                delay: 5s
+                max_attempts: 3
             resources:
                 limits:
                     memory: 1G
@@ -79,8 +83,15 @@ services:
         depends_on:
             - elasticsearch
         restart: unless-stopped
+        deploy:
+            restart_policy:
+                condition: any
+                delay: 5s
+                max_attempts: 3
+                
         # command: "--debug"
         command: "bash -c 'logstash-plugin install logstash-input-relp logstash-filter-tld logstash-filter-rest && /usr/local/bin/docker-entrypoint'"
+
 
     # Takes logs from each microservice and pipes into logstash
     logspout:
@@ -93,6 +104,11 @@ services:
             - logstash
             - elasticsearch
         restart: unless-stopped
+        deploy:
+            restart_policy:
+                condition: any
+                delay: 5s
+                max_attempts: 3
         networks:
             - bridge
 
@@ -108,6 +124,11 @@ services:
         depends_on:
             - elasticsearch
         restart: unless-stopped
+        deploy:
+            restart_policy:
+                condition: any
+                delay: 5s
+                max_attempts: 3
         
         labels:
             - "traefik.backend=kibana"
@@ -130,6 +151,11 @@ services:
             - KIBANA_HOST=kibana
             - LOGSTASH_HOST=logstash
         restart: unless-stopped
+        deploy:
+            restart_policy:
+                condition: any
+                delay: 5s
+                max_attempts: 3
     
     # https://github.com/silverwind/droppy
     # Used to drop files that can be immediately picked up by filebeat and sent to logstash
