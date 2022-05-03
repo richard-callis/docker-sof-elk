@@ -34,15 +34,6 @@ services:
     #         - "traefik.enable=true"
     #         - "traefik.port=9000"
 
-    # Startup to run scripts needed to set up sof-elk
-    starter:
-        image: vertoforce/sof-elk-starter
-        build: startup
-        volumes:
-            - ./sof-elk:/sof-elk
-        networks:
-            - bridge
-
     # ELK
     elasticsearch:
         image: elasticsearch:8.1.3
